@@ -1,0 +1,3 @@
+作者：space
+说明：此代码实现一个简陋的事件框架，实现一个了多线程间总线，封装epoll，eventfd、timerfd.
+许可证：GPL2
