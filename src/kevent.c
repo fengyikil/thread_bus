@@ -80,8 +80,7 @@ int kevent_bind( kevent* ket)
 void kevent_null_callback( kevent *ket)
 {
     //防止不断触发
-    uint64_t value;
-    read(ket->fd, &value, 8);
+    kevent_void_repeat(ket);
     printf("null_callback do nothing\n");
 }
  kevent *kevent_new(int32 epoll_fd, int32 fd, kcallback fun)
