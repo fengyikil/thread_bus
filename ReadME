@@ -1,3 +1,35 @@
 作者：space
-说明：此代码实现一个简陋的事件框架，实现一个了多线程间总线，封装epoll，eventfd、timerfd.
 许可证：GPL2
+
+说明：此代码实现一个简陋(易)的，封装了epoll，eventfd、timerfd事件框架，在此基础上实现一个了多线程间总线框架，由总线、通道、消息、消息过滤器组成.
+
+源码框架在src目录，进到目录，直接make会生成一个静态库。
+
+测试代码为test.c文件，在上一步生成静态库的基础上，切换到根目录，直接make生成test 然后./test执行。
+
+测试用列简介：test.c里面开了一个bus（总线）,三各线程loop，每个线程都有自己的channel（通道）连接在bus上，通道上可以自定义消息过滤器，接收想要的消息，之后会在各自消息处理回调中处理。
+
+线程1：接收所有的消息。
+线程2：只接收 type==1的消息
+线程3：只接收 type==2的消息
+
+程序在线程1的loop上创建了定时器，定时器定时往总线上发送 类型 为 1和2的消息。
+
+google translate:
+
+Author: space
+License: GPL2
+
+Description: This code implements a simple (easy), packaging epoll, eventfd, timerfd event framework, on the basis of a multi-threaded bus framework, by the bus, channel, message, message filter components.
+
+The source code framework in the src directory, into the directory, make will generate a direct static library.
+
+Test code for the test.c file, in the previous step to generate a static library, based on the switch to the root directory, make directly generate test and then.
+
+Test with a brief introduction: test.c inside opened a bus (bus), the three thread loop, each thread has its own channel (channel) connected to the bus, the channel can be customized message filter to receive the desired , Which are then processed in the respective message processing callbacks.
+
+Thread 1: Receive all messages.
+Thread 2: Receive only messages with type == 1
+Thread 3: Receive only messages of type == 2
+
+The program creates a timer on thread 1's thread, and the timer sends messages of type 1 and 2 to the bus at regular intervals.

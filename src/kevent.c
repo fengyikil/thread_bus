@@ -1,4 +1,4 @@
-#include "kevent.h"
+#include"kevent.h"
 #include <sys/types.h>
 #include <error.h>
 #include <string.h>
@@ -18,8 +18,8 @@ static inline void  get_new_value(struct itimerspec* new_value,int tms,int iscyc
 //    printf("reset time\n");
     //    struct itimerspec new_value;
     struct timespec now;
-    int32 s = tms / 1000;
-    int32 ms = tms%1000;
+    I32 s = tms / 1000;
+    I32 ms = tms%1000;
     if (clock_gettime(CLOCK_REALTIME, &now) == -1)
         perror("clock_gettime");
     if(tms!=0)
@@ -47,9 +47,9 @@ static inline void  get_new_value(struct itimerspec* new_value,int tms,int iscyc
 *
 *
 */
-int kevent_create_epollfd()
+I32 kevent_create_epollfd()
 {
-    int32 epollfd = epoll_create1(0);
+    I32 epollfd = epoll_create1(0);
       if (epollfd == -1) {
           perror("epoll_create1");
           exit(1);
@@ -57,7 +57,7 @@ int kevent_create_epollfd()
       return epollfd;
 }
 
-int kevent_bind( kevent* ket)
+I32 kevent_bind( kevent* ket)
 {
     struct epoll_event ev;
     if(ket != NULL && ket->fun !=NULL)
@@ -83,7 +83,7 @@ void kevent_null_callback( kevent *ket)
     kevent_void_repeat(ket);
     printf("null_callback do nothing\n");
 }
- kevent *kevent_new(int32 epoll_fd, int32 fd, kcallback fun)
+ kevent *kevent_new(I32 epoll_fd, I32 fd, kcallback fun)
 {
      kevent* kt =  ( kevent*)malloc(sizeof( kevent));
     kt->epoll_fd = epoll_fd;
@@ -92,7 +92,7 @@ void kevent_null_callback( kevent *ket)
     kevent_bind(kt);
     return kt;
 }
-int32 kevent_break( kevent* ket)
+I32 kevent_break( kevent* ket)
 {
     struct epoll_event ev;
     if(ket != NULL && ket->fun !=NULL)
@@ -111,7 +111,7 @@ int32 kevent_break( kevent* ket)
     else
         return -1;
 }
- kevent*  kevent_efd_new(int32 epoll_fd,kcallback fun)
+ kevent*  kevent_efd_new(I32 epoll_fd,kcallback fun)
 {
      kevent* kt =( kevent*)malloc(sizeof( kevent));
     kt->epoll_fd = epoll_fd;
@@ -143,7 +143,7 @@ void kevent_efd_delete( kevent* ket)
     close(ket->fd);
     free(ket);
 }
- kevent*  kevent_time_new(int32 epoll_fd,kcallback fun,int32 ms, int32 iscycle)
+ kevent*  kevent_time_new(I32 epoll_fd,kcallback fun,I32 ms, I32 iscycle)
 {
     struct itimerspec new_value;
     struct epoll_event ev;
@@ -173,7 +173,7 @@ label_err:
     free(kt);
     return NULL;
 }
-int32 kevent_time_stop( kevent* ket)
+I32 kevent_time_stop( kevent* ket)
 {
     struct itimerspec new_value;
     get_new_value(&new_value,0,0);
@@ -182,7 +182,7 @@ int32 kevent_time_stop( kevent* ket)
         return -1;
     }
 }
-void kevent_time_reset( kevent* ket,kcallback fun,int32 ms,int32 iscycle)
+void kevent_time_reset( kevent* ket,kcallback fun,I32 ms,I32 iscycle)
 {
     struct itimerspec new_value;
     ket->fun = fun;
@@ -202,16 +202,16 @@ void kevent_time_free( kevent* ket)
 {
     kevent_time_reset(ket,kevent_null_callback,0,0);
 }
-int kevent_time_isfree( kevent* ket)
+I32 kevent_time_isfree( kevent* ket)
 {
     if(ket->fun == kevent_null_callback)
         return 1;
     else
         return 0;
 }
-void kevent_loop(int32 epollfd)
+void kevent_loop(I32 epollfd)
 {
-    int32 nfds, n;
+    I32 nfds, n;
     kevent*  ket;
     struct epoll_event  events[MAX_EVENTS];
     for(;;)
@@ -233,12 +233,12 @@ void kevent_loop(int32 epollfd)
 
 void kevent_void_repeat( kevent *ket)
 {
-    uint64 value;
+    U64 value;
     read(ket->fd, &value, 8);
 }
 
 void kevent_efd_notice( kevent *ket)
 {
-    uint64  value;
+    U64  value;
     write(ket->fd, &value, 8);
 }

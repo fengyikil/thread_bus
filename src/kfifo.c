@@ -24,10 +24,10 @@
 #define is_power_of_2(x) ((x) != 0 && (((x) & ((x) - 1)) == 0))
 //取a和b中最小值
 #define min(a, b) (((a) < (b)) ? (a) : (b))
-static inline uint32 fls(uint32 x)
+static inline U32 fls(U32 x)
 {
-    uint32 position;
-    uint32 i;
+    U32 position;
+    U32 i;
     if(0 != x)
     {
         for (i = (x >> 1), position = 0; i != 0; ++position)
@@ -39,11 +39,11 @@ static inline uint32 fls(uint32 x)
     }
     return position+1;
 }
-static inline uint32 roundup_pow_of_two(uint32 x)
+static inline U32 roundup_pow_of_two(U32 x)
 {
     return 1UL << fls(x - 1);
 }
-struct fifo* fifo_init(uint32 size)
+struct fifo* fifo_init(U32 size)
 {
     struct fifo *f = NULL;
     if(!is_power_of_2(size))
@@ -128,7 +128,7 @@ void fifo_free(struct fifo* f)
         f = NULL;
     }
 }
-uint32 __fifo_len(struct fifo* f)
+U32 __fifo_len(struct fifo* f)
 {
     return (f->in - f->out);
 }
@@ -136,9 +136,9 @@ void __fifo_reset(struct fifo *f)
 {
     f->in = f->out = 0;
 }
-uint32 __fifo_get(struct fifo* f,void *buf,uint32 len)
+U32 __fifo_get(struct fifo* f,void *buf,U32 len)
 {
-    uint32 l;
+    U32 l;
     unsigned char *buffer = buf;
     l = f->in - f->out;
     if(len > l)
@@ -155,9 +155,9 @@ uint32 __fifo_get(struct fifo* f,void *buf,uint32 len)
         return len;
     }
 }
-uint32 __fifo_put(struct fifo* f,void *buf,uint32 len)
+U32 __fifo_put(struct fifo* f,void *buf,U32 len)
 {
-    uint32 l;
+    U32 l;
     unsigned char *buffer = buf;
     l = f->size - f->in + f->out;
     if( len > l)
@@ -175,9 +175,9 @@ uint32 __fifo_put(struct fifo* f,void *buf,uint32 len)
     }
 }
 
-uint32 fifo_len(struct fifo *f)
+U32 fifo_len(struct fifo *f)
 {
-    uint32 llen=0;
+    U32 llen=0;
     pthread_mutex_lock(f->mtx);
     llen = __fifo_len(f);
     pthread_mutex_unlock(f->mtx);
@@ -189,9 +189,9 @@ void fifo_reset(struct fifo *f)
     f->in = f->out = 0;
     pthread_mutex_unlock(f->mtx);
 }
-uint32 fifo_get(struct fifo *f,void *buffer,uint32 len)
+U32 fifo_get(struct fifo *f,void *buffer,U32 len)
 {
-    uint32 llen = 0;
+    U32 llen = 0;
     pthread_mutex_lock(f->mtx);
     while(__fifo_len(f)<len)
     {
@@ -201,9 +201,9 @@ uint32 fifo_get(struct fifo *f,void *buffer,uint32 len)
    pthread_mutex_unlock(f->mtx);
    return llen;
 }
-uint32 fifo_put(struct fifo *f,void *buffer,uint32 len)
+U32 fifo_put(struct fifo *f,void *buffer,U32 len)
 {
-    uint32 llen = 0;
+    U32 llen = 0;
     pthread_mutex_lock(f->mtx);
     llen = __fifo_put(f,buffer,len);
     pthread_mutex_unlock(f->mtx);
@@ -220,7 +220,7 @@ uint32 fifo_put(struct fifo *f,void *buffer,uint32 len)
     return llen;
 }
 //阻塞方式入队列，不成功则休眠1ms，再次尝试
-void block_fifo_put(struct fifo *f,void *buffer,uint32 len)
+void block_fifo_put(struct fifo *f,void *buffer,U32 len)
 {
     while(fifo_put(f,buffer,len)!=len)
     {

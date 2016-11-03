@@ -3,7 +3,7 @@ CFLAGS = -Wall -fPIC
 LDFLAGS = -lpthread
 INCLUDES = -I.
 
-OBJECTS = kbus.o kevent.o kfifo.o klist.o
+OBJECTS = kbus.o kevent.o kfifo.o klist.o mesg.o
 
 all : ${OBJECTS}
 	ar cr libkbus.a ${OBJECTS}
@@ -13,4 +13,3 @@ clean :
 #dependence
 %.o : %.c
 	${CC} ${CFLAGS} -c $< -o $@ 
- 
