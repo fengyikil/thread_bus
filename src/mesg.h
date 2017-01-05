@@ -11,5 +11,6 @@ typedef struct _Mesg
 char* Mesg_build(unsigned int type,unsigned int  len,char* data,char* buf);
 unsigned int Mesg_len(char* buf);
 unsigned int Mesg_type(char* buf);
+void Mesg_modify_type(char *buf,unsigned int type);
 void* Mesg_data(char* buf);
 #endif

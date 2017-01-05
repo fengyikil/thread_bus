@@ -11,16 +11,20 @@ char* Mesg_build(unsigned int type, unsigned int len, char* data, char* buf)
     return buf;
 }
 
-unsigned int Mesg_len(char *buf)
+unsigned int  Mesg_len(char *buf)
 {
     Mesg* mg = (Mesg*)buf;
     return mg->len;
 }
-
 unsigned int Mesg_type(char *buf)
 {
     Mesg* mg = (Mesg*)buf;
     return mg->type;
+}
+void Mesg_modify_type(char *buf,unsigned int type)
+{
+    Mesg* mg = (Mesg*)buf;
+    mg->type = type;
 }
 
 void* Mesg_data(char *buf)
