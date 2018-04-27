@@ -1,4 +1,3 @@
-#include "debug.h"
 #include "kevent.h"
 #include <sys/types.h>
 #include <error.h>

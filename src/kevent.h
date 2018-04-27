@@ -1,6 +1,6 @@
 #ifndef      _KEVENT_H
 #define     _KEVENT_H
-#include "applicfg.h"
+#include "ktype.h"
 
 #define MAX_EVENTS 255
 typedef struct _kevent kevent;

@@ -42,7 +42,7 @@ unsigned char  thread1_filter_mesg_callbck(unsigned int type)
 void thread1_bus_event( kevent* ket)
 {
     //防止不断触发
-    kevent_void_repeat(ket);
+    kevent_read(ket);
     char buf[50];
     struct type_msg1* m1;
     struct type_msg2* m2;
@@ -75,7 +75,7 @@ void thread2_bus_event(kevent* ket)
 {
 
     //防止不断触发
-    kevent_void_repeat(ket);
+    kevent_read(ket);
     char buf[50];
     struct type_msg1* m1;
     while( kchannel_recmesg(kc2,buf)!=-1)
@@ -97,7 +97,7 @@ unsigned char  thread3_filter_mesg_callbck(unsigned int type)
 void thread3_bus_event(kevent* ket)
 {
     //防止不断触发
-    kevent_void_repeat(ket);
+    kevent_read(ket);
     char buf[50];
     struct type_msg2* m2;
     while( kchannel_recmesg(kc3,buf)!=-1)
@@ -111,7 +111,7 @@ void thread3_bus_event(kevent* ket)
 //定时发送三种消息
 void time1_fun(kevent* ket)
 {
-    kevent_void_repeat(ket);
+    kevent_read(ket);
     char buf[50];
     static struct type_msg1 m1 ={3,4};
     static struct type_msg2 m2 ={1,3,4.3};

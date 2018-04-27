@@ -62,7 +62,7 @@ I32 kchannel_sendmsg(kchannel* channel,I8* buf)
             if(kc->filter_mg==NULL || (*kc->filter_mg)(mg->type) == 1)
             {
                 __fifo_put(kc->msg_ff,buf,sizeof( Mesg)+Mesg_len(buf));
-                kevent_efd_notice(kc->ket);
+                kevent_write(kc->ket,0);
         }
     }
     pthread_mutex_unlock(channel->bus->mtx);
