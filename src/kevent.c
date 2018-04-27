@@ -1,4 +1,5 @@
-#include"kevent.h"
+#include "debug.h"
+#include "kevent.h"
 #include <sys/types.h>
 #include <error.h>
 #include <string.h>
@@ -7,7 +8,7 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 #include <sys/timerfd.h>
-#include<sys/eventfd.h>
+#include <sys/eventfd.h>
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -49,7 +50,7 @@ static inline void  get_new_value(struct itimerspec* new_value,int tms,int iscyc
 */
 I32 kevent_create_epollfd()
 {
-    I32 epollfd = epoll_create1(0);
+    I32 epollfd = epoll_create(255);
       if (epollfd == -1) {
           perror("epoll_create1");
           exit(1);
@@ -80,7 +81,7 @@ I32 kevent_bind( kevent* ket)
 void kevent_null_callback( kevent *ket)
 {
     //防止不断触发
-    kevent_void_repeat(ket);
+    kevent_read(ket);
     printf("null_callback do nothing\n");
 }
  kevent *kevent_new(I32 epoll_fd, I32 fd, kcallback fun)
@@ -147,7 +148,7 @@ void kevent_efd_delete( kevent* ket)
 {
     struct itimerspec new_value;
     struct epoll_event ev;
-     kevent* kt =( kevent*)malloc(sizeof( kevent));
+     kevent* kt =(kevent*)malloc(sizeof( kevent));
     kt->epoll_fd = epoll_fd;
     kt->fun = fun;
     kt->fd = timerfd_create(CLOCK_REALTIME,0 );
@@ -182,7 +183,7 @@ I32 kevent_time_stop( kevent* ket)
         return -1;
     }
 }
-void kevent_time_reset( kevent* ket,kcallback fun,I32 ms,I32 iscycle)
+I32 kevent_time_reset( kevent* ket,kcallback fun,I32 ms,I32 iscycle)
 {
     struct itimerspec new_value;
     ket->fun = fun;
@@ -231,14 +232,17 @@ void kevent_loop(I32 epollfd)
 }
 
 
-void kevent_void_repeat( kevent *ket)
+void kevent_write( kevent *ket,I32 msg)
 {
-    U64 value;
-    read(ket->fd, &value, 8);
+    I32 value[2];
+    value[0] = 1; //防止8个字节全0不触发
+    value[1] = msg;
+    write(ket->fd, &value, 8);
 }
 
-void kevent_efd_notice( kevent *ket)
+I32 kevent_read( kevent *ket)
 {
-    U64  value;
-    write(ket->fd, &value, 8);
+    I32  value[2];
+    read(ket->fd, &value, 8);
+    return value[1];
 }
